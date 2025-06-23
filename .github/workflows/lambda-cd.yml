@@ -30,9 +30,7 @@ jobs:
         aws-region: us-west-2
     - name: Upload zip file to S3
       run: |
-        aws s3 cp ./aws/function.zip s3://12345612345good/
-        resize.zip
+        aws s3 cp ./aws/function.zip s3://12345612345good/resize.zip
     - name: Update Lambda function
       run: |
-        aws lambda update-function-code --function-name resize --s3-bucket
-        12345612345good --s3-key resize.zip
+        aws lambda update-function-code --function-name resize --s3-bucket 12345612345good --s3-key resize.zip
