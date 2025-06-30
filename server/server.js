@@ -7,7 +7,19 @@ import { promises as fs } from 'fs';
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import pg from 'pg';
+
 dotenv.config();
+const { Pool } = pg;
+// PostgreSQL pool configuration
+const pool = new Pool({
+    user: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    database: process.env.POSTGRES_DB,
+    password: 'postgres',
+    port: 5432,
+});
+
 const url = process.env.MONGO_DB_URL;
 const dbName = process.env.MONGO_DB;
 const collectionName = process.env.MONGO_DB_COLLECTION;
@@ -171,6 +183,23 @@ app.put('/user/:id', async (req, res) => {
         res.status(500).send('Hmm, something doesn\'t smell right... Error deleting sock');
     }
 });
+app.post('/socks/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const result = await
+            pool.query('SELECT uid FROM users WHERE username = $1 AND password = $2',
+                [username, password]);
+        if (result.rows.length > 0) {
+            res.status(200).json({ uid: result.rows[0].uid });
+        } else {
+            res.status(401).json({ message: 'Authentication failed' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
