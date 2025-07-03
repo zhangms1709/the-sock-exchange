@@ -1,0 +1,17 @@
+name: spark-demo
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.8
+  - openjdk
+  - pyspark
+  - findspark
+  - pandas
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - jupyter
+  - jupyterlab>=4.2
+  - ipykernel
